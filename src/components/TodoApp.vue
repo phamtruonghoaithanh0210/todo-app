@@ -1,47 +1,65 @@
 <template>
   <div class="container">
-    <h2 class="text-center mt-5">hello World</h2>
+    <div class="row">
+      <div class="col"></div>
+      <div class="col-8">
+          <h2 class="text-center mt-5">Todo Apps</h2>
 
-    <!-- Input -->
-    <div class="d-flex">
-        <input v-model="task" type="text" placeholder="Enter Task" class="form-control">
-        <button @click="submitTask" class="btn btn-warning rounded-0">SUBMIT</button>
+        <!-- Input -->
+        <div class="d-flex">
+            <input v-model="task" type="text" placeholder="Enter Task" class="form-control">
+            <button @click="submitTask" class="btn btn-warning rounded-0">SUBMIT</button>
+        </div>
+
+
+        <!-- Task Table -->
+        <table class="table table-bordered mt-5">
+          <thead>
+            <tr>
+              <th scope="col">Task</th>
+              <th scope="col">Status</th>
+              <th scope="col" class="text-center">#</th>
+              <th scope="col" class="text-center">#</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(task,index) in tasks" :key="index">
+              <td>
+                <span :class="{'finished': task.status === 'finished'}">
+                  {{task.name}}
+                </span>
+              </td>
+              <td  style="width: 120px">
+                <span @click="changeStatus(index)" class="pointer"
+                  :class="{'text-danger': task.status === 'to-do',
+                    'text-warning': task.status === 'in-progress',
+                    'text-success': task.status === 'finished'}">
+                  {{ firstCharUpper(task.status)}}
+                </span>
+              </td>
+              <td>
+                <div class="text-center" @click="editTask(index)">
+                  <font-awesome-icon icon="fa-solid fa-pen" />
+                </div>
+              </td>
+              <td>
+                <div class="text-center" @click="deleteTask(index)">
+                  <font-awesome-icon icon="fa-solid fa-trash" />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col"></div>
     </div>
 
-
-    <!-- Task Table -->
-    <table class="table table-bordered mt-5">
-      <thead>
-        <tr>
-          <th scope="col">Task</th>
-          <th scope="col">Status</th>
-          <th scope="col" class="text-center">#</th>
-          <th scope="col" class="text-center">#</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(task,index) in tasks" :key="index">
-          <td>{{task.name}}</td>
-          <td>{{task.status}}</td>
-          <td>
-            <div class="text-center" @click="editTask(index)">
-              <font-awesome-icon icon="fa-solid fa-pen" />
-            </div>
-          </td>
-          <td>
-            <div class="text-center" @click="deleteTask(index)">
-              <font-awesome-icon icon="fa-solid fa-trash" />
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'ToDo App',
   props: {
     msg: String
   },
@@ -49,6 +67,7 @@ export default {
     return{
       task : '',
       editedTask : null,
+      avaiableStatuses: ['to-do', 'in-progress', 'finished'],
       tasks : [
         {
           name: "Ngủ Dậy Lúc 9h.",
@@ -86,6 +105,16 @@ export default {
     editTask(index){
       this.task = this.tasks[index].name
       this.editedTask = index
+    },
+
+    changeStatus(index){
+      let newIndex = this.avaiableStatuses.indexOf(this.tasks[index].status);
+      if(++newIndex > 2) newIndex = 0;
+      this.tasks[index].status = this.avaiableStatuses[newIndex]
+    },
+
+    firstCharUpper(str){
+      return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
   }
@@ -94,4 +123,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.pointer {
+  cursor: pointer;
+}
+
+.finished {
+  text-decoration: line-through;
+}
 </style>
