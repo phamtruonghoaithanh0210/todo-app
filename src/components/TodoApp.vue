@@ -96,10 +96,12 @@ export default {
       }
 
       this.task = ''
+      this.$swal('Add task', 'Add task successful !', 'success');
     },
 
     deleteTask(index){
       this.tasks.splice(index,1)
+      this.$swal('Delete task', 'Delete task successful !', 'success');
     },
 
     editTask(index){
@@ -111,6 +113,8 @@ export default {
       let newIndex = this.avaiableStatuses.indexOf(this.tasks[index].status);
       if(++newIndex > 2) newIndex = 0;
       this.tasks[index].status = this.avaiableStatuses[newIndex]
+
+      this.$swal('Change status', `${this.avaiableStatuses[index]} to ${this.avaiableStatuses[newIndex]} successful`, 'success');
     },
 
     firstCharUpper(str){
